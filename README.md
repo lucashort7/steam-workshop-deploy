@@ -1,3 +1,20 @@
+
+## IMPORTANT NOTICE
+
+Versions v1, and v1.0.1 of this action have been disabled due to a potential security risk. Please upgrade to v2, which contains a fix for the issue.
+
+If you have previously used this action with the upload directory (`path` parameter) pointed at the repository root (or a different directory containing a `.git` directory)
+please note that before v4 this action did not exclude the `.git` directory from the upload. If you are affected by this, you should check your uploaded workshop items for any `.git` directories,
+and in case they contain any stored credentials, invalidate/revoke them as soon as possible.
+
+For more details, see the full security advisory published here:
+https://github.com/BoldestDungeon/steam-workshop-deploy/security/advisories/GHSA-x6gv-2rvh-qmp6
+
+The new version v4 of this action excludes `.git` directories and other common sensitive files by default. It also adds support for custom exclusion rules through a `.deployignore` file.
+
+Thanks to @Gamebuster19901 for reporting this issue and implementing the fix.
+
+
 # Steam Workshop Deploy
 
 Github Action to upload items to the Steam Workshop. 
