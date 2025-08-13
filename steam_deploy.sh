@@ -9,6 +9,71 @@ contentroot=$(pwd)/$rootPath
 manifest_path=$(pwd)/manifest.vdf
 
 echo ""
+echo "##########################"
+echo "# Calculating Deployment #"
+echo "##########################"
+echo ""
+
+if [ "$concurrentStaging" == "true" ]; then
+    stagingPath="$stagingPath/$GITHUB_SHA"
+fi
+
+mkdir -p "$stagingPath"
+
+echo "Staging Path: $stagingPath"
+
+if [ -z "$deployIgnore" ]; then
+    if [ -f "$contentroot/.deployignore" ]; then
+        deployIgnore="$contentroot/.deployignore"
+        echo "Using user content root .deployignore at $deployIgnore"
+    else
+        deployIgnore=""
+        echo "no user .deployignore found"
+    fi
+else
+    # Make deployIgnore absolute if relative
+    if [[ ! "$deployIgnore" = /* ]]; then
+        deployIgnore="$contentroot/$deployIgnore"
+    fi
+    echo "Using user supplied deploy ignore file at $deployIgnore"
+fi
+
+RSYNC_EXCLUDE_PARAMS=()
+
+if [ "$useBuiltinDeployIgnore" == "true" ]; then
+    echo "Including built-in deploy ignore"
+    RSYNC_EXCLUDE_PARAMS+=(--exclude-from=/root/.defaultdeployignore)
+else
+    echo "!!!!!!NOT USING BUILT IN DEPLOY IGNORE FILE!!!!!!"
+fi
+
+if [ -n "$deployIgnore" ]; then
+    echo "Including user deploy ignore file $deployIgnore"
+    RSYNC_EXCLUDE_PARAMS+=(--exclude-from="$deployIgnore")
+fi
+
+echo "# BuildIgnore Start #"
+
+if [ "$useBuiltinDeployIgnore" = "true" ]; then
+    cat /root/.defaultdeployignore || true
+fi
+echo ""
+if [ -n "$deployIgnore" ]; then
+    cat "$deployIgnore" || true
+fi
+
+echo "# BuildIgnore End #"
+
+echo "Running rsync to package content..."
+
+if [ "$verbosity" != "NORMAL" ]; then #NOTE: Documentation states that valid values are NORMAL and TRACE.
+    rsync -av "${RSYNC_EXCLUDE_PARAMS[@]}" "$contentroot/" "$stagingPath"
+else #assume TRACE
+    rsync -a "${RSYNC_EXCLUDE_PARAMS[@]}" "$contentroot/" "$stagingPath"
+fi
+
+
+echo ""
 echo "#################################"
 echo "#    Generating Item Manifest   #"
 echo "#################################"
@@ -19,7 +84,7 @@ cat << EOF > "manifest.vdf"
 {
     "appid" "$appId"
     "publishedfileid" "$itemId"
-    "contentfolder" "$contentroot"
+    "contentfolder" "$stagingPath"
     "changenote" "$changeNote"
 }
 EOF

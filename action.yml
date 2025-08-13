@@ -30,7 +30,27 @@ inputs:
   path:
     required: false
     default: ''
-    description: 'The path of the directory to be uploaded, relative to the repository root.'
+    description: 'The path of the directory containing the files you wish to upload, relative to the repository root.'
+  deployIgnore:
+    required: true
+    default: ''
+    description: 'The path of the deploy ignore file. Paths in this file are not included in the deployment. If a value is not supplied, will attempt to read a file named `.deployignore` from the root of the supplied path.'
+  useBuiltinDeployIgnore:
+    required: true
+    default: 'true'
+    description: 'Enables the built-in .deployignore rules to exclude common sensitive files during deployment. This is combined with the file supplied in `deployIgnore`'
+  stagingPath:
+    required: true
+    default: '/tmp/steam_deploy/'
+    description: 'The staging directory. Files will be copied from your `path` to here before being uploaded. Anything excluded under your .deployIgnore rules will not be copied here, and as such will not be packaged with your deployed artifact. This directory is not cleared when this workflow finishes.'
+  concurrentStaging:
+    required: true
+    default: 'false'
+    description: 'If `true`, the `stagingPath` will include the commit SHA as a subdirectory, ensuring each deployment uses its own isolated path and avoiding conflicts between concurrent deployments. Useful for self-hosted or nonephemeral actions runners. This directory is not cleared when this workflow finishes'
+  verbosity:
+    required: true
+    default: "NORMAL"
+    description: 'Sets the log verbosity. Can be either `NORMAL` or `TRACE`. If invalid, will behave as `TRACE`.'
   changeNote:
     required: false
     default: ''
@@ -50,3 +70,8 @@ runs:
     itemId: ${{ inputs.publishedFileId }}
     rootPath: ${{ inputs.path }}
     changeNote: ${{ inputs.changeNote }}
+    deployIgnore: ${{ inputs.deployIgnore }}
+    useBuiltinDeployIgnore: ${{ inputs.useBuiltinDeployIgnore }}
+    stagingPath: ${{ inputs.stagingPath }}
+    concurrentStaging: ${{ inputs.concurrentStaging }}
+    verbosity: ${{ inputs.verbosity }}
