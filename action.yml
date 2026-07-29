@@ -55,6 +55,10 @@ inputs:
     required: false
     default: ''
     description: 'An optional changenote to describe the update.'
+  previewFile:
+    required: false
+    default: ''
+    description: 'Path to a preview image file, relative to `path`, used to update the Workshop item thumbnail. Omit to leave the item''s current preview image unchanged.'
 outputs:
   manifest:
     description: "The path to the generated manifest.vdf"
@@ -75,3 +79,4 @@ runs:
     stagingPath: ${{ inputs.stagingPath }}
     concurrentStaging: ${{ inputs.concurrentStaging }}
     verbosity: ${{ inputs.verbosity }}
+    previewFile: ${{ inputs.previewFile }}

@@ -79,15 +79,28 @@ echo "#    Generating Item Manifest   #"
 echo "#################################"
 echo ""
 
-cat << EOF > "manifest.vdf"
-"workshopitem"
+previewFilePath=""
+if [ -n "${previewFile:-}" ]; then
+    previewFilePath="$contentroot/$previewFile"
+    if [ ! -f "$previewFilePath" ]; then
+        echo "::error::previewFile '$previewFile' not found at $previewFilePath"
+        exit 1
+    fi
+    echo "Using preview image: $previewFilePath"
+fi
+
 {
-    "appid" "$appId"
-    "publishedfileid" "$itemId"
-    "contentfolder" "$stagingPath"
-    "changenote" "$changeNote"
-}
-EOF
+    echo "\"workshopitem\""
+    echo "{"
+    echo "    \"appid\" \"$appId\""
+    echo "    \"publishedfileid\" \"$itemId\""
+    echo "    \"contentfolder\" \"$stagingPath\""
+    echo "    \"changenote\" \"$changeNote\""
+    if [ -n "$previewFilePath" ]; then
+        echo "    \"previewfile\" \"$previewFilePath\""
+    fi
+    echo "}"
+} > "manifest.vdf"
 
 cat manifest.vdf
 echo ""

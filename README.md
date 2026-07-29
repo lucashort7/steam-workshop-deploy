@@ -107,3 +107,7 @@ The path of the directory to be uploaded, relative to the repository root.
 #### changeNote
 
 An optional changenote to describe the update.
+
+#### previewFile
+
+Optional path to a preview image, relative to `path`, used to update the Workshop item's thumbnail. Omit to leave the item's current preview image unchanged (this is also the fallback behavior of upstream `steamcmd`/`workshop_build_item` when `previewfile` is absent from the manifest).
