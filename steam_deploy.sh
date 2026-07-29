@@ -81,7 +81,12 @@ echo ""
 
 previewFilePath=""
 if [ -n "${previewFile:-}" ]; then
-    previewFilePath="$contentroot/$previewFile"
+    # Resolved relative to the action's invocation directory (repo root),
+    # not $contentroot/$rootPath -- previewFile is Workshop *listing* metadata,
+    # not part of the uploaded content, so it must stay reachable even when
+    # rootPath points at a subfolder (e.g. a "Contents/" build output dir)
+    # that doesn't itself contain the preview image.
+    previewFilePath="$(pwd)/$previewFile"
     if [ ! -f "$previewFilePath" ]; then
         echo "::error::previewFile '$previewFile' not found at $previewFilePath"
         exit 1
