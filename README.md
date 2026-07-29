@@ -111,3 +111,17 @@ An optional changenote to describe the update.
 #### previewFile
 
 Optional path to a preview image, relative to `path`, used to update the Workshop item's thumbnail. Omit to leave the item's current preview image unchanged (this is also the fallback behavior of upstream `steamcmd`/`workshop_build_item` when `previewfile` is absent from the manifest).
+
+#### visibility
+
+Optional. `0` (Public), `1` (FriendsOnly), `2` (Private), or `3` (Unlisted). Omit to leave the item's current visibility unchanged.
+
+#### title
+
+Optional Workshop item title. Omit to leave the item's current title unchanged.
+
+#### description
+
+Optional Workshop item description. Omit to leave the item's current description unchanged. Not escaped for embedded quotes -- avoid literal `"` characters in the value.
+
+Note: Workshop **tags** are not supported here -- `workshop_build_item`'s VDF manifest has no documented `tags` key (Valve's docs only reference `ISteamUGC::SetItemTags`/`AddItemKeyValueTag`, which aren't exposed through this manifest-based flow). Setting tags would need the separate Steamworks Web API, not `steamcmd`.

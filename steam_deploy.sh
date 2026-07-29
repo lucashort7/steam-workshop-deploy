@@ -89,6 +89,11 @@ if [ -n "${previewFile:-}" ]; then
     echo "Using preview image: $previewFilePath"
 fi
 
+if [ -n "${visibility:-}" ] && ! [[ "$visibility" =~ ^[0-3]$ ]]; then
+    echo "::error::visibility '$visibility' is invalid. Must be 0 (Public), 1 (FriendsOnly), 2 (Private), or 3 (Unlisted)."
+    exit 1
+fi
+
 {
     echo "\"workshopitem\""
     echo "{"
@@ -98,6 +103,15 @@ fi
     echo "    \"changenote\" \"$changeNote\""
     if [ -n "$previewFilePath" ]; then
         echo "    \"previewfile\" \"$previewFilePath\""
+    fi
+    if [ -n "${visibility:-}" ]; then
+        echo "    \"visibility\" \"$visibility\""
+    fi
+    if [ -n "${title:-}" ]; then
+        echo "    \"title\" \"$title\""
+    fi
+    if [ -n "${description:-}" ]; then
+        echo "    \"description\" \"$description\""
     fi
     echo "}"
 } > "manifest.vdf"

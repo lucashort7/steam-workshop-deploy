@@ -59,6 +59,18 @@ inputs:
     required: false
     default: ''
     description: 'Path to a preview image file, relative to `path`, used to update the Workshop item thumbnail. Omit to leave the item''s current preview image unchanged.'
+  visibility:
+    required: false
+    default: ''
+    description: 'Workshop item visibility: 0 (Public), 1 (FriendsOnly), 2 (Private), or 3 (Unlisted). Omit to leave the item''s current visibility unchanged.'
+  title:
+    required: false
+    default: ''
+    description: 'Workshop item title. Omit to leave the item''s current title unchanged.'
+  description:
+    required: false
+    default: ''
+    description: 'Workshop item description. Omit to leave the item''s current description unchanged. Not escaped for embedded quotes -- avoid literal `"` characters.'
 outputs:
   manifest:
     description: "The path to the generated manifest.vdf"
@@ -80,3 +92,6 @@ runs:
     concurrentStaging: ${{ inputs.concurrentStaging }}
     verbosity: ${{ inputs.verbosity }}
     previewFile: ${{ inputs.previewFile }}
+    visibility: ${{ inputs.visibility }}
+    title: ${{ inputs.title }}
+    description: ${{ inputs.description }}
